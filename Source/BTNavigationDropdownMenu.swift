@@ -265,7 +265,7 @@ open class BTNavigationDropdownMenu: UIView {
         - title: An enum to define title to be displayed, can be a string or index of items.
         - items: The array of items to select
      */
-    public init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: BTTitle, items: [String]) {
+    public init(navigationItem: UINavigationItem? = nil, toggleButton: UIBarButtonItem? = nil, navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: BTTitle, items: [String]) {
         // Key window
         guard let window = UIApplication.shared.keyWindow else {
             super.init(frame: CGRect.zero)
@@ -306,7 +306,15 @@ open class BTNavigationDropdownMenu: UIView {
 
         // Init button as navigation title
         self.menuButton = UIButton(frame: frame)
-        self.menuButton.addTarget(self, action: #selector(BTNavigationDropdownMenu.menuButtonTapped(_:)), for: UIControlEvents.touchUpInside)
+        
+        if let navigationItem = navigationItem, let toggleButton = toggleButton {
+            toggleButton.action = #selector(BTNavigationDropdownMenu.menuButtonTapped(_:))
+            toggleButton.target = self
+            navigationItem.rightBarButtonItem = toggleButton
+        } else {
+            self.menuButton.addTarget(self, action: #selector(BTNavigationDropdownMenu.menuButtonTapped(_:)), for: UIControlEvents.touchUpInside)
+        }
+        
         self.addSubview(self.menuButton)
 
         self.menuTitle = UILabel(frame: frame)
